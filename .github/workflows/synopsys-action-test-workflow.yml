@@ -23,6 +23,8 @@ jobs:
           ### SCANNING: Required fields
           blackduck_url: ${{ secrets.BLACKDUCK_URL  }}
           blackduck_token: ${{ secrets.BLACKDUCK_TOKEN  }}
+          ### true-> full scan,  false-> rapid scan
+          blackduck_scan_full: false
   
           ### SCANNING: Optional fields
           # 아래 옵션이 활성화 되면, Blackduck(hub)의  Policy에 따라서 (BLOCKER,CRITICAL)  스캔이 정지됨. 
@@ -30,7 +32,7 @@ jobs:
           
           ### PULL REQUEST COMMENTS: Uncomment below to enable
           blackduck_prComment_enabled: true 
-          blackduck_prComment_severities: "Critical,High,Medium,Low"  
+          blackduck_prComment_severities: 'Critical,High,Medium,Low'
           github_token: ${{ secrets.PRGITHUB_TOKEN }} # Required when PR comments is enabled
           
           ### SARIF report generation and upload to GitHub Adavanced Security: Uncomment below to enable
