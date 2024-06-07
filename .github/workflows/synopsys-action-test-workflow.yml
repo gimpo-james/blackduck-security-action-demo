@@ -21,8 +21,9 @@ jobs:
           
         with:
           ### SCANNING: Required fields
-          blackduck_url: ${{ secrets.BLACKDUCK_URL  }}
-          blackduck_token: ${{ secrets.BLACKDUCK_TOKEN  }}
+          blackduck_url: ${{ secrets.BLACKDUCK_URL }}
+          blackduck_token: ${{ secrets.BLACKDUCK_TOKEN }}
+                    
           ### true-> full scan,  false-> rapid scan
           blackduck_scan_full: false
   
