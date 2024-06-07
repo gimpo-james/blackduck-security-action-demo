@@ -33,7 +33,6 @@ jobs:
           
           ### PULL REQUEST COMMENTS: Uncomment below to enable
           blackduck_prcomment_enabled: true 
-          blackduck_prcomment_severities: 'Critical,High,Medium,Low'
           github_token: ${{ secrets.PRGITHUB_TOKEN }} # Required when PR comments is enabled
           
           ### SARIF report generation and upload to GitHub Adavanced Security: Uncomment below to enable
