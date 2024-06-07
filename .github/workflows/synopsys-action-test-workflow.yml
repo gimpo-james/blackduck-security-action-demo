@@ -1,0 +1,42 @@
+name: CI-blackduck
+on:
+  push:
+    branches: [ main, master, develop, stage, release ]
+  pull_request:
+    branches: [ main, master, develop, stage, release ]
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: [ self-hosted,linux ]
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Black Duck Scan
+        uses: synopsys-sig/synopsys-action@v1.9.0
+        
+        ### Configure DETECT environment variables
+        env:
+          DETECT_PROJECT_NAME: ${{ github.event.repository.name }}
+          
+        with:
+          ### SCANNING: Required fields
+          blackduck_url: ${{ secrets.BLACKDUCK_URL  }}
+          blackduck_token: ${{ secrets.BLACKDUCK_TOKEN  }}
+  
+          ### SCANNING: Optional fields
+          # 아래 옵션이 활성화 되면, Blackduck(hub)의  Policy에 따라서 (BLOCKER,CRITICAL)  스캔이 정지됨. 
+          #blackduck_scan_failure_severities: 'BLOCKER,CRITICAL'
+          
+          ### PULL REQUEST COMMENTS: Uncomment below to enable
+          blackduck_prComment_enabled: true 
+          blackduck_prComment_severities: "Critical,High,Medium,Low"  
+          github_token: ${{ secrets.PRGITHUB_TOKEN }} # Required when PR comments is enabled
+          
+          ### SARIF report generation and upload to GitHub Adavanced Security: Uncomment below to enable
+          # blackduck_reports_sarif_create: true # Create Black Duck SARIF report and upload it as artifact
+          # blackduck_upload_sarif_report: true  # Upload Black Duck SARIF report in GitHub Advanced Security tab
+          # github_token: ${{ secrets.GITHUB_TOKEN }} # Required when blackduck_upload_sarif_report is set as true
+
+          ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+          #include_diagnostics: true
