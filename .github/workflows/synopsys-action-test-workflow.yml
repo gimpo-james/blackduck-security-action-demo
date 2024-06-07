@@ -1,4 +1,4 @@
-name: CI-blackduck
+name: CI-sysnopsys-action-test-main
 on:
   push:
     branches: [ main, master, develop, stage, release ]
