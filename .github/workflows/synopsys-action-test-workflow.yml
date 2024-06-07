@@ -1,16 +1,20 @@
-name: CI-blackduck
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Nodegoat-workflow CI
+
 on:
   push:
     branches: [ main, master, develop, stage, release ]
   pull_request:
     branches: [ main, master, develop, stage, release ]
   workflow_dispatch:
-  
+
 jobs:
   build:
-    runs-on: [ self-hosted,linux ]
+    runs-on: [self-hosted,linux]
     steps:
-      - name: Checkout Source
+      - name: Checkoust Source 
         uses: actions/checkout@v4
       - name: Black Duck Scan
         uses: synopsys-sig/synopsys-action@v1.9.0
@@ -23,18 +27,21 @@ jobs:
           ### SCANNING: Required fields
           blackduck_url: ${{ vars.BLACKDUCK_URL }}
           blackduck_token: ${{ secrets.BLACKDUCK_TOKEN }}
-                    
-          ### true-> full scan,  false-> rapid scan
-          blackduck_scan_full: true
-  
+          # True ->  full scan ,  false-> rapid scan 
+          blackduck_scan_full: false
+          blackduck_automation_prcomment: true
           ### SCANNING: Optional fields
           # 아래 옵션이 활성화 되면, Blackduck(hub)의  Policy에 따라서 (BLOCKER,CRITICAL)  스캔이 정지됨. 
           #blackduck_scan_failure_severities: 'BLOCKER,CRITICAL'
           
+          ### FIX PULL REQUEST CREATION: Uncomment below to enable
+          #blackduck_fixpr_enabled: true
+          #github_token: ${{ secrets.PTGITHUB_TOKEN }} # Required when Fix PRs is enabled
+          
           ### PULL REQUEST COMMENTS: Uncomment below to enable
           #blackduck_prcomment_enabled: true 
           #github_token: ${{ secrets.PRGITHUB_TOKEN }} # Required when PR comments is enabled
-          
+
           ### SARIF report generation and upload to GitHub Adavanced Security: Uncomment below to enable
           # blackduck_reports_sarif_create: true # Create Black Duck SARIF report and upload it as artifact
           # blackduck_upload_sarif_report: true  # Upload Black Duck SARIF report in GitHub Advanced Security tab
