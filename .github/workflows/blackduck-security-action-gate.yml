@@ -1,0 +1,49 @@
+name: BD SCA Security Action Gate
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  security-scan:
+    name: Black Duck SCA Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # 프로젝트 언어에 맞는 빌드 환경 설정 (예: Java/Gradle)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Project
+        run: ./gradlew build -x test
+
+      # Black Duck SCA 실행 및 보안 게이트 적용
+      - name: Run Black Duck SCA Scan
+        uses: blackduck-inc/black-duck-security-scan@v2
+        with:
+          blackducksca_url: ${{ secrets.BLACKDUCK_URL }}
+          blackducksca_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # 스캔 완료 후 결과가 나올 때까지 대기 (게이트 판정에 필수)
+          blackducksca_waitForScan: 'true'
+          
+          # ⭐ 핵심: 지정한 심각도 이상의 취약점 발견 시 빌드 실패(FAIL) 처리
+          blackducksca_scan_failure_severities: 'BLOCKER,CRITICAL,HIGH'
+          
+          # PR 화면에 취약점 요약 코멘트 자동 작성
+          blackducksca_prComment_enabled: 'true'
+          
+          # (선택) 취약점 수정 PR 자동 생성
+          blackducksca_fixpr_enabled: 'true'
