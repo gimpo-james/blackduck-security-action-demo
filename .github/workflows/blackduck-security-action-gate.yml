@@ -12,21 +12,26 @@ permissions:
 jobs:
   security-scan:
     name: Black Duck SCA Scan
+    #GitHub에서 관리하는 최신 Ubuntu 환경 사용
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      # 프로젝트 언어에 맞는 빌드 환경 설정 (예: Java/Gradle)
+      # 프로젝트 언어에 맞는 빌드 환경 설정 
+      # Java 17 설정 (WebGoat 2023.8.0 권장 버전)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'temurin'     # 또는 'zulu', 'adopt' 등 선택 가능
           java-version: '17'
+          cache: 'maven'       # Maven 의존성 캐싱 활성화 (빌드 속도 향상)
 
-      - name: Build Project
-        run: ./gradlew build -x test
+      # Maven 빌드 실행
+      # WebGoat 소스에 포함된 Maven Wrapper(./mvnw)를 사용하는 추천
+      - name: Build with Maven Project
+        run: ./mvnw clean install -DskipTests
 
       # Black Duck SCA 실행 및 보안 게이트 적용
       - name: Run Black Duck SCA Scan
